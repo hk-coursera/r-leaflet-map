@@ -1,0 +1,72 @@
+---
+title: "Leaflet.js map"
+author: "Gennady Kalashnikov"
+output:
+  html_document:
+    keep_md: yes
+  pdf_document: default
+---
+
+### Treasure Map
+```{r echo=FALSE}
+library(leaflet)
+
+set.seed(1234567)
+
+iconNorth <- makeIcon(
+  iconUrl = "http://upload.wikimedia.org/wikipedia/commons/4/4a/Arrow_north.svg",
+  iconWidth = 12, iconHeight = 32
+)
+iconSouth <- makeIcon(
+  iconUrl = "http://upload.wikimedia.org/wikipedia/commons/f/ff/Arrow_south.svg",
+  iconWidth = 12, iconHeight = 32
+)
+iconWest <- makeIcon(
+  iconUrl = "http://upload.wikimedia.org/wikipedia/commons/9/9f/Arrow_west.svg",
+  iconWidth = 32, iconHeight = 12
+)
+iconEast <- makeIcon(
+  iconUrl = "http://upload.wikimedia.org/wikipedia/commons/7/71/Arrow_east.svg",
+  iconWidth = 32, iconHeight = 12
+)
+
+getMarkers <- function(n) {
+  data.frame(lat = runif(n, min = 20.037689, max = 20.081873),
+             lng = runif(n, min = -72.875710, max = -72.788840))
+}
+
+markersNorth <- getMarkers(4)
+markersSouth <- getMarkers(4)
+markersWest <- getMarkers(4)
+markersEast <- getMarkers(4)
+
+map <- markersNorth %>% leaflet() %>% addTiles() %>% addMarkers(icon = iconNorth)
+
+map <- addMarkers(map, lng = markersNorth$lng, lat = markersNorth$lat, icon = iconNorth, popup = rep("\"Go North\"", nrow(markersNorth)))
+map <- addMarkers(map, lng = markersSouth$lng, lat = markersSouth$lat, icon = iconSouth, popup = rep("\"Go South\"", nrow(markersSouth)))
+map <- addMarkers(map, lng = markersWest$lng, lat = markersWest$lat, icon = iconWest, popup = rep("\"Go West\"", nrow(markersWest)))
+map <- addMarkers(map, lng = markersEast$lng, lat = markersEast$lat, icon = iconEast, popup = rep("\"Go East\"", nrow(markersEast)))
+
+circles <- data.frame(lat = runif(4, min = 20.037689, max = 20.081873),
+                      lng = runif(4, min = -72.875710, max = -72.788840),
+                      col = sample(c("red", "red", "blue", "blue"), 4, replace = FALSE),
+                      stringsAsFactors = FALSE)
+
+map <- addCircleMarkers(map, lng = circles$lng, lat = circles$lat, color = circles$col)
+
+map <- addLegend(map, labels = c("Marker", "Pitfall", "Skeleton"), colors = c("black", "red", "blue"))
+
+boxIcon <- makeIcon(
+  iconUrl = "http://upload.wikimedia.org/wikipedia/commons/a/a4/Treasure_chest_color.png",
+  iconWidth = 32, iconHeight = 32
+)
+
+map <- addMarkers(map,
+  lng = -72.838493,
+  lat = 20.059758,
+  icon = boxIcon,
+  popup = c("Expected treasure chest location")
+)
+
+map
+```
