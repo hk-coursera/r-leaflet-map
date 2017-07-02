@@ -5,10 +5,12 @@ output:
   html_document:
     keep_md: yes
   pdf_document: default
+date: "`r format(Sys.time(), '%d %B, %Y')`"
 ---
 
-### Treasure Map
-```{r echo=FALSE}
+## Treasure Map
+### Source code
+```{r echo=TRUE, results='hide'}
 library(leaflet)
 
 set.seed(1234567)
@@ -68,5 +70,10 @@ map <- addMarkers(map,
   popup = c("Expected treasure chest location")
 )
 
+map
+```
+
+### Map
+```{r echo=FALSE}
 map
 ```
